@@ -107,4 +107,5 @@ The GitHub Actions workflow (boundary check, offline unit tests, gitleaks) is st
 
 ## Licence
 
-No top-level licence yet. The vendored folder `src/recon_lab/vendor/crashlab/` carries its own MIT LICENSE.
+- This repository: MIT, see [`LICENSE`](LICENSE) (Copyright (c) 2026 B Gee).
+- Vendored measurement modules in `src/recon_lab/vendor/crashlab/`: MIT, under their own [`LICENSE`](src/recon_lab/vendor/crashlab/LICENSE), reproduced verbatim from Agent-Crash-Lab @ 8a3f865 (see `VENDORED.md`).
