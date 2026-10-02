@@ -27,7 +27,7 @@ class BoundaryCheck:
     ALLOWED_SUFFIXES = (".example", ".invalid")
     DENYLIST_EXEMPT = ("scripts/boundary_check.py",)
     FULLY_EXEMPT = ("tests/test_boundary_check.py",)
-    URL = re.compile(r"\b[a-z][a-z0-9+.-]*://([^\s/'\"<>()\[\]`\\]+)", re.IGNORECASE)
+    URL = re.compile(r"\b[a-z][a-z0-9+.-]*://([^\s/'\"<>()\[\]`\\,;]+)", re.IGNORECASE)
     TEMPLATE_CHARS = set("{}%$")
     EMAIL = re.compile(r"\b[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)\b")
 

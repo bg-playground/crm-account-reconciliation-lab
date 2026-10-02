@@ -28,6 +28,10 @@ class BoundaryCheckTests(unittest.TestCase):
         self.assertTrue(BoundaryCheck.scan_text("a.md", "mail me at someone@gmail.com"))
         self.assertTrue(BoundaryCheck.scan_text("a.md", "http://example.com"))  # .com is not reserved-TLD .example
 
+    def test_unquoted_csv_cells_end_the_host(self):
+        self.assertEqual(BoundaryCheck.scan_text("q.csv", "id,http://www.a.example,1-404-555-0152;0.7"), [])
+        self.assertTrue(BoundaryCheck.scan_text("q.csv", "id,http://www.corp.com,1-404-555-0152"))
+
     def test_bare_domains_without_scheme_are_not_flagged(self):
         self.assertEqual(BoundaryCheck.scan_text("a.md", "WWW.QUORVANE.EXAMPLE"), [])
 
