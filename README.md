@@ -1,8 +1,21 @@
 # CRM Salesforce Account Reconciliation Lab
 
-Synthetic data only. Final result: **v1 KILL** on one criterion (calibration).
+A synthetic Salesforce Account reconciliation experiment comparing a probabilistic baseline with an AI-assisted cascade.
+
+Final result: **v1 KILL** — the experiment failed its frozen acceptance gate on calibration. Eight of nine criteria passed; the acceptance bar was preserved. A successful evidence verification reproduces this result.
 
 CI is configured in `.github/workflows/ci.yml`; see [CI](#ci). The v1 experiment verdict and CI verification status are separate.
+
+## Start here
+
+| What you want to do | Where to start |
+|---|---|
+| Understand the problem and findings | [Executive overview](#executive-overview) and [results vs the frozen bar](#results-vs-the-frozen-bar) |
+| See how individual Accounts are routed | [Three recorded decision examples](docs/decision-examples.md) |
+| Try the demo without an API key | [Five-minute visitor walkthrough](docs/visitor-walkthrough.md) |
+| Inspect the failure and underlying evidence | [Calibration table](results/calibration.md), [review queue](results/review_queue.csv), and [published report](results/index.md) |
+
+The cascade recommends merge, no match, or human review for synthetic record pairs. It does not connect to Salesforce or merge live Accounts.
 
 ## Executive overview
 
@@ -52,6 +65,8 @@ flowchart LR
 ```
 
 ## How to reproduce
+
+Requires Python 3.11 or later. Start in the repository root. For Windows PowerShell commands, expected output, and troubleshooting, use the [visitor walkthrough](docs/visitor-walkthrough.md).
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
