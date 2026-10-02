@@ -1,0 +1,125 @@
+{
+  "cutoffs": {
+    "ai_merge": 0.8,
+    "ai_nonmatch": 0.3,
+    "baseline_review_floor_match_weight": -6.6293566200796095,
+    "splink_merge_weight": 22.0
+  },
+  "dev_run_id": "dev-101-c0b47589",
+  "frozen_at_utc": "2026-10-02T11:52:14.868891+00:00",
+  "reasoning_effort": "low",
+  "rules": {
+    "bar": {
+      "auto_merge_precision_min": 0.98,
+      "auto_merge_precision_wilson_low_min": 0.96,
+      "auto_merge_recall_min": 0.85,
+      "blocking_recall_min": 0.98,
+      "calibration_bins": 10,
+      "calibration_max_gap": 0.1,
+      "calibration_met_share_min": 0.8,
+      "calibration_min_count": 30,
+      "disguised_names_flag_drop": 0.25,
+      "missing_rate_max": 0.02,
+      "published_spend_max_usd": 10.0,
+      "reachable_recall_tolerance": 0.01,
+      "recall_gain_min": 0.05,
+      "review_pairs_max": 300,
+      "review_reduction_factor": 0.7,
+      "review_share_max": 0.1,
+      "unseen_family_recall_min": 0.75
+    },
+    "cutoff_selection_on_dev": {
+      "ai_merge": {
+        "grid": [
+          0.5,
+          0.6,
+          0.7,
+          0.8,
+          0.85,
+          0.9,
+          0.95,
+          0.97,
+          0.99
+        ],
+        "rule": "lowest value on the grid with dev cascade auto-merge precision >= target",
+        "target_precision": 0.99
+      },
+      "ai_nonmatch": {
+        "grid": [
+          0.02,
+          0.05,
+          0.1,
+          0.2,
+          0.3
+        ],
+        "max_true_pair_loss_share": 0.01,
+        "rule": "highest value on the grid such that dev true pairs at or below it <= share of all dev true pairs"
+      },
+      "routing": "Splink match weight >= cutoff -> auto-merge; every other blocked candidate -> AI judge (mean of non-missing repeats); both repeats missing -> review",
+      "splink_merge_weight": {
+        "grid": {
+          "start": -5.0,
+          "step": 0.5,
+          "stop": 40.0
+        },
+        "rule": "lowest match weight on the grid with dev Splink auto-merge precision >= target; none -> no Splink auto-merge",
+        "target_precision": 0.99
+      }
+    },
+    "data": {
+      "hard_negative_twins": 75,
+      "intra_org_duplicates_per_org": 40,
+      "rows_per_org": 1000,
+      "shared_entities": 250,
+      "unseen_family": "rebrand_domain",
+      "unseen_rate_dev": 0.0,
+      "unseen_rate_test": 0.15
+    },
+    "model": {
+      "api": "chat.completions",
+      "calibration_audit_pairs_above_splink_cutoff": 100,
+      "concurrency": 8,
+      "disguised_arm_pairs": 300,
+      "max_completion_tokens": 400,
+      "max_judged_pairs": 1800,
+      "repeats_disguised_arm": 1,
+      "repeats_main_arm": 2,
+      "requested": "gpt-6-luna",
+      "response_format": "json_object"
+    },
+    "pricing_usd_per_1m_tokens": {
+      "input": 0.1,
+      "note": "Standard tier list price read 2026-10-02; cached input charged at full input price",
+      "output": 0.5
+    },
+    "schema": "recon-protocol-rules-v1",
+    "seeds": {
+      "dev": 101,
+      "test": 202
+    },
+    "spend": {
+      "dev_cap_usd": 10.0,
+      "hard_ceiling_usd": 20.0,
+      "published_cap_usd": 10.0,
+      "stop_and_report_at_cumulative_usd": 15.0
+    },
+    "verdict_rules": {
+      "KILL": "any criterion fails",
+      "PASS": "all nine criteria pass on test seed 202",
+      "disguised_names": "a recall drop above 0.25 is flagged, not a kill",
+      "honest_negative": "if 5 fails, the negative result is published as-is",
+      "invalid": "if 1, 2, 7 or 9 fails the run is invalid and no accuracy claim is published"
+    },
+    "written": "2026-10-02 (America/New_York), before any AI judge call"
+  },
+  "schema": "recon-frozen-protocol-v1",
+  "sha256": {
+    "dev_data_seed_101": "11dc105d3ff4511b80fddaa0b1bb7d219afecee6e1e500202084dd0a2fb909df",
+    "prompt": "703557ed0d065a9e9f09c442005323825a3ea148d6ed6e211de9f0d6dace4a63",
+    "rules": "2b56e64cf94aec90bb9184bc03a48c6ddfbd107a9380dd949112c44cdb88d01d",
+    "splink_model": "a09c7996ea9d70f3c3849dc090f5bd753b38f3cc92a632d12a3c94eb4e33e3c3",
+    "test_data_seed_202": "994aa9b2f462188f54ed54d4cfddf416a3c06a4e5f7453bf4e14071bd38e7816"
+  },
+  "statement": "Bar, cutoffs, prompt, Splink model and test data are frozen here, before the published run on seed 202.",
+  "thresholds_fingerprint": "4eae0b587d638024754ac689f63316db973f56be618f0a4c764cce343847caf7"
+}
