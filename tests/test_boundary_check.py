@@ -14,6 +14,12 @@ class BoundaryCheckTests(unittest.TestCase):
     def test_exempt_file_skips_denylist_only(self):
         self.assertEqual(BoundaryCheck.scan_text("scripts/boundary_check.py", "turgon"), [])
         self.assertTrue(BoundaryCheck.scan_text("scripts/boundary_check.py", "x@corp.com"))
+        self.assertTrue(BoundaryCheck.scan_text("README.md", "x@corp.com"))
+        self.assertEqual(BoundaryCheck.scan_text("tests/test_boundary_check.py", "penguin x@corp.com"), [])
+
+    def test_template_hosts_skipped_but_concrete_hosts_checked(self):
+        self.assertEqual(BoundaryCheck.scan_text("a.py", 'f"https://www.{host}"'), [])
+        self.assertTrue(BoundaryCheck.scan_text("a.py", 'f"https://www.corp.com/{path}"'))
 
     def test_urls_and_emails(self):
         self.assertEqual(BoundaryCheck.scan_text("a.md", "https://www.quorvane.example/about and ops@quorvane.example"), [])

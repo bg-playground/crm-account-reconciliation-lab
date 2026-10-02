@@ -2,9 +2,16 @@
 """Fail if any tracked text file names a private project or uses a non-reserved email/URL domain.
 
 Allowed domains end in .example or .invalid (RFC 2606 reserved names). The
-denylist terms are matched case-insensitively. This script and its own test are
-the only files exempt from the denylist (they must spell the terms to check
-for them); they are still checked for emails and URLs.
+denylist terms are matched case-insensitively.
+
+Exemptions (the only ones):
+- this script is exempt from the denylist (it must spell the terms), but is
+  still checked for emails and URLs;
+- its unit test (tests/test_boundary_check.py) is exempt from all checks,
+  because it must contain bad examples to prove the check fails on them;
+- a URL whose host is a code template placeholder (contains {, }, % or $) is
+  skipped, because it is not a concrete address (e.g. a format string that
+  builds "<scheme>://<host>" from a generated .example host).
 """
 
 from __future__ import annotations
@@ -18,8 +25,10 @@ from pathlib import Path
 class BoundaryCheck:
     DENYLIST = ("nataegisflow", "studio-offers", "turgon", "penguin")
     ALLOWED_SUFFIXES = (".example", ".invalid")
-    DENYLIST_EXEMPT = ("scripts/boundary_check.py", "tests/test_boundary_check.py")
-    URL = re.compile(r"\b[a-z][a-z0-9+.-]*://([^\s/'\"<>()\[\]`]+)", re.IGNORECASE)
+    DENYLIST_EXEMPT = ("scripts/boundary_check.py",)
+    FULLY_EXEMPT = ("tests/test_boundary_check.py",)
+    URL = re.compile(r"\b[a-z][a-z0-9+.-]*://([^\s/'\"<>()\[\]`\\]+)", re.IGNORECASE)
+    TEMPLATE_CHARS = set("{}%$")
     EMAIL = re.compile(r"\b[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)\b")
 
     @staticmethod
@@ -29,13 +38,17 @@ class BoundaryCheck:
 
     @staticmethod
     def scan_text(rel: str, text: str) -> list[str]:
-        problems = []
+        problems: list[str] = []
+        if rel in BoundaryCheck.FULLY_EXEMPT:
+            return problems
         lowered = text.lower()
         if rel not in BoundaryCheck.DENYLIST_EXEMPT:
             for term in BoundaryCheck.DENYLIST:
                 if term in lowered:
                     problems.append(f"{rel}: private name '{term}'")
         for match in BoundaryCheck.URL.finditer(text):
+            if BoundaryCheck.TEMPLATE_CHARS & set(match.group(1)):
+                continue
             if not BoundaryCheck.host_allowed(match.group(1)):
                 problems.append(f"{rel}: URL host '{match.group(1)}' is not .example/.invalid")
         for match in BoundaryCheck.EMAIL.finditer(text):
