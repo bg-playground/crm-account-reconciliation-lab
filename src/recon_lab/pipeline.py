@@ -160,9 +160,11 @@ class Steps:
         client = JudgeClient(model=m["requested"], version_log=versions, spend=ledger, calls_path=run_dir / "calls.jsonl",
                              max_completion_tokens=m["max_completion_tokens"], reasoning_effort=reasoning_effort,
                              concurrency=m["concurrency"])
-        results = asyncio.run(client.run(requests))
+        try:
+            results = asyncio.run(client.run(requests))
+        finally:
+            ledger.flush(run_id, note=f"{len(requests)} requests")
         version_summary = versions.write_summary()
-        ledger.flush(run_id, note=f"{len(requests)} requests")
         return results, version_summary, ledger, client.stopped_for_spend
 
     @staticmethod

@@ -73,6 +73,14 @@ python -m recon_lab.cli train-baseline
 
 The committed results can be checked without any model call: the data, Splink model, prompt and rules are hashed in `config/frozen/protocol.json`, and every judge answer is in `runs/published-202-2fd9d168/calls.jsonl`. Re-running the judge (`dev`, `freeze`, `publish`) needs `OPENAI_API_KEY` in the environment (it is never logged) and would be a new run: the published run is one-shot and refuses to overwrite itself.
 
+## Budget admission for new runs
+
+Each provider attempt reserves its configured worst-case token cost before dispatch. Admission includes actual estimated spend and every outstanding reservation in the shared `SpendLedger`. Settlement replaces the reservation with reported usage; the phase cap remains inclusive and the cumulative stop line (bounded by the hard ceiling) remains strict. Once a client encounters budget denial, its remaining requests are marked `not_called_spend_cap`, preserving the existing stop behavior.
+
+Automatic SDK retries are disabled: one admitted request makes at most one provider attempt. API/transport errors, cancellation after admission, and absent or invalid usage retain their reservation because billable usage is uncertain. The pipeline flushes the ledger even on cancellation, recording these amounts separately as `unresolved_reserved_usd` and `unresolved_calls`; subsequent runs include them in admission, without treating them as measured spend or silently releasing them. Existing spend records without those fields remain readable.
+
+This protects calls sharing one ledger in one process. It is not a cross-process lock or crash-durable reservation journal. Cost remains an estimate: input uses the configured token allowance and prices, while output uses the configured completion limit. Reported usage above the reservation is recorded in full and can exhaust the budget; this does not guarantee a provider billing ceiling. The historical frozen protocol, inputs, prompt, model, logs, and published results are unchanged.
+
 ## Repo layout
 
 | Path | What it holds |
