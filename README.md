@@ -11,6 +11,7 @@ CI is configured in `.github/workflows/ci.yml`; see [CI](#ci). The v1 experiment
 | What you want to do | Where to start |
 |---|---|
 | Understand the problem and findings | [Executive overview](#executive-overview) and [results vs the frozen bar](#results-vs-the-frozen-bar) |
+| Review pairs and explore recorded failures | [Local synthetic review workbench](docs/review-workbench.md) |
 | See how individual Accounts are routed | [Three recorded decision examples](docs/decision-examples.md) |
 | Try the demo without an API key | [Five-minute visitor walkthrough](docs/visitor-walkthrough.md) |
 | Inspect the failure and underlying evidence | [Calibration table](results/calibration.md), [review queue](results/review_queue.csv), and [published report](results/index.md) |
