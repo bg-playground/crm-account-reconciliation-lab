@@ -1,7 +1,3 @@
-# Staged copy of the GitHub Actions workflow. Activate it by moving it to
-# .github/workflows/ci.yml; pushing that path needs a GitHub token with the
-# "workflow" scope, which the token used to build this repo did not have.
-
 name: ci
 
 on:
@@ -35,6 +31,10 @@ jobs:
         env:
           OPENAI_API_KEY: ""
         run: python -m pytest -q
+      - name: Verify published v1 evidence (offline)
+        env:
+          OPENAI_API_KEY: ""
+        run: python -m recon_lab.cli verify
 
   gitleaks:
     runs-on: ubuntu-latest

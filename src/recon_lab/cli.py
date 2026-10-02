@@ -1,4 +1,4 @@
-"""Command line: python -m recon_lab.cli <generate|train-baseline|probe|dev|freeze|publish>."""
+"""Command line for lab runs and read-only offline evidence verification."""
 
 from __future__ import annotations
 
@@ -21,7 +21,18 @@ class Cli:
         dev.add_argument("--reasoning-effort", default=None)
         sub.add_parser("freeze")
         sub.add_parser("publish")
+        sub.add_parser("verify")
         args = parser.parse_args(argv)
+        if args.command == "verify":
+            from .verify import verify
+
+            try:
+                out = verify()
+            except (ValueError, KeyError, OSError, TypeError) as exc:
+                print(f"Evidence verification failed: {exc}", file=sys.stderr)
+                return 1
+            print(json.dumps(out, indent=2, sort_keys=True))
+            return 0
         from . import pipeline
 
         if args.command in ("probe", "dev", "publish") and not os.environ.get("OPENAI_API_KEY"):

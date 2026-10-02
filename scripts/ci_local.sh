@@ -7,6 +7,8 @@ echo "== boundary check"
 "$PY" scripts/boundary_check.py
 echo "== unit tests (offline; API key unset)"
 OPENAI_API_KEY="" "$PY" -m pytest -q
+echo "== published evidence verification (offline)"
+OPENAI_API_KEY="" "$PY" -m recon_lab.cli verify
 echo "== gitleaks"
 if command -v gitleaks >/dev/null 2>&1; then
   gitleaks git --no-banner --redact .

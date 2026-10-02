@@ -65,9 +65,9 @@ class Rules:
 class Workbench:
     """Loads one seed: rows, normalised records, candidates, truth, Splink scores."""
 
-    def __init__(self, seed: int, model: dict | None = None) -> None:
+    def __init__(self, seed: int, model: dict | None = None, *, data_root: Path | None = None) -> None:
         self.seed = seed
-        self.rows, self.truth_rows = AccountCsv.load_seed(Paths.data, seed)
+        self.rows, self.truth_rows = AccountCsv.load_seed(Paths.data if data_root is None else data_root, seed)
         self.by_uid = {f"{org}:{r['Id']}": r for org in ORGS for r in self.rows[org]}
         self.records = [Normalizer.record(r, org) for org in ORGS for r in self.rows[org]]
         self.candidates, self.per_rule = Blocker.candidates(self.records)
