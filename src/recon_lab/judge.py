@@ -9,7 +9,9 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import math
 import random
+import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -74,7 +76,11 @@ class SpendLedger:
         self.phase_cap = phase_cap_usd
         self.stop_at_total = min(stop_at_total_usd, hard_ceiling_usd)
         self.prior_total = SpendLedger.total(self.path)
+        self.prior_total_exposure = SpendLedger.exposure(self.path)
         self.prior_phase = SpendLedger.total(self.path, phase)
+        self.prior_phase_exposure = SpendLedger.exposure(self.path, phase)
+        self._lock = threading.RLock()
+        self._reservations: dict[object, float] = {}
         self.phase_spend = 0.0
         self.calls = 0
         self.input_tokens = 0
@@ -95,26 +101,66 @@ class SpendLedger:
     def cumulative(self) -> float:
         return self.prior_total + self.phase_spend
 
-    def allow(self, worst_case_usd: float) -> bool:
-        """True if one more call (at its worst-case cost) stays within the phase cap and the stop line."""
+    @staticmethod
+    def exposure(path: Path, phase: str | None = None) -> float:
+        """Actual estimates plus unresolved reservations from prior runs."""
+        if not Path(path).exists():
+            return 0.0
+        return sum(r["est_usd"] + r.get("unresolved_reserved_usd", 0.0)
+                   for r in JsonlAppendLog.read(path)
+                   if r.get("record_type") == "spend" and (phase is None or r.get("phase") == phase))
 
-        within_phase = self.prior_phase + self.phase_spend + worst_case_usd <= self.phase_cap
-        within_total = self.cumulative + worst_case_usd < self.stop_at_total
-        return within_phase and within_total
+    @property
+    def reserved_usd(self) -> float:
+        with self._lock:
+            return sum(self._reservations.values())
+
+    def allow(self, worst_case_usd: float) -> bool:
+        """Check estimated exposure, including all outstanding calls."""
+        if not math.isfinite(worst_case_usd) or worst_case_usd < 0:
+            raise ValueError("Reservation must be finite and nonnegative")
+        with self._lock:
+            exposure = self.phase_spend + self.reserved_usd + worst_case_usd
+            return (self.prior_phase_exposure + exposure <= self.phase_cap
+                    and self.prior_total_exposure + exposure < self.stop_at_total)
+
+    def reserve(self, worst_case_usd: float) -> object | None:
+        """Atomically admit one attempt; no await separates check and reservation."""
+        with self._lock:
+            if not self.allow(worst_case_usd):
+                return None
+            token = object()
+            self._reservations[token] = worst_case_usd
+            return token
+
+    def settle(self, reservation: object, input_tokens: int, output_tokens: int) -> float:
+        """Replace a reservation with reported usage exactly once."""
+        if any(type(n) is not int or n < 0 for n in (input_tokens, output_tokens)):
+            raise ValueError("Usage must contain nonnegative integer token counts")
+        with self._lock:
+            if reservation not in self._reservations:
+                raise ValueError("Unknown or already settled reservation")
+            usd = self.add(input_tokens, output_tokens)
+            del self._reservations[reservation]
+            return usd
 
     def add(self, input_tokens: int, output_tokens: int) -> float:
-        usd = SpendLedger.cost(input_tokens, output_tokens, self.input_per_m, self.output_per_m)
-        self.phase_spend += usd
-        self.calls += 1
-        self.input_tokens += input_tokens
-        self.output_tokens += output_tokens
-        return usd
+        with self._lock:
+            usd = SpendLedger.cost(input_tokens, output_tokens, self.input_per_m, self.output_per_m)
+            self.phase_spend += usd
+            self.calls += 1
+            self.input_tokens += input_tokens
+            self.output_tokens += output_tokens
+            return usd
 
     def flush(self, run_id: str, note: str = "") -> dict[str, Any]:
         record = {"record_type": "spend", "timestamp": UtcClock.iso(), "run_id": run_id, "phase": self.phase,
                   "calls": self.calls, "input_tokens": self.input_tokens, "output_tokens": self.output_tokens,
                   "est_usd": round(self.phase_spend, 6), "cumulative_est_usd": round(self.cumulative, 6),
                   "price_input_per_m": self.input_per_m, "price_output_per_m": self.output_per_m, "note": note}
+        if self.reserved_usd:
+            record["unresolved_reserved_usd"] = self.reserved_usd
+            record["unresolved_calls"] = len(self._reservations)
         JsonlAppendLog.append(self.path, record)
         return record
 
@@ -149,7 +195,7 @@ class JudgeClient:
         if transport is not None:  # tests only
             http_kwargs["transport"] = transport
         self.client = AsyncOpenAI(http_client=ModelVersionHttpHook.async_client(version_log, **http_kwargs),
-                                  max_retries=2, base_url=base_url)
+                                  max_retries=0, base_url=base_url)
 
     def _params(self, messages: list[dict[str, str]]) -> dict[str, Any]:
         params: dict[str, Any] = {"model": self.model, "messages": messages,
@@ -161,7 +207,8 @@ class JudgeClient:
 
     async def one(self, request: JudgeRequest) -> dict[str, Any]:
         async with self.semaphore:
-            if self.stopped_for_spend or not self.spend.allow(self.worst_case):
+            reservation = None if self.stopped_for_spend else self.spend.reserve(self.worst_case)
+            if reservation is None:
                 self.stopped_for_spend = True
                 return JudgeClient._result(request, None, None, {}, None, 0.0, "not_called_spend_cap")
             started = time.monotonic()
@@ -172,11 +219,15 @@ class JudgeClient:
                                            time.monotonic() - started,
                                            f"error:{type(exc).__name__}:{getattr(exc, 'status_code', '')}")
             usage = response.usage
-            tokens = {"input": getattr(usage, "prompt_tokens", 0) or 0,
-                      "output": getattr(usage, "completion_tokens", 0) or 0}
+            input_tokens = getattr(usage, "prompt_tokens", None)
+            output_tokens = getattr(usage, "completion_tokens", None)
+            if any(type(n) is not int or n < 0 for n in (input_tokens, output_tokens)):
+                return JudgeClient._result(request, None, TypedAnswerParser.parse(QUESTION, None), {},
+                                           response.model, time.monotonic() - started, "missing_usage")
+            tokens = {"input": input_tokens, "output": output_tokens}
             details = getattr(usage, "completion_tokens_details", None)
             tokens["reasoning"] = getattr(details, "reasoning_tokens", 0) or 0 if details else 0
-            self.spend.add(tokens["input"], tokens["output"])
+            self.spend.settle(reservation, tokens["input"], tokens["output"])
             content = response.choices[0].message.content if response.choices else None
             answer = TypedAnswerParser.parse(QUESTION, content)
             return JudgeClient._result(request, content, answer, tokens, response.model,
@@ -194,11 +245,13 @@ class JudgeClient:
                 "latency_s": round(latency, 3), "status": status}
 
     async def run(self, requests: list[JudgeRequest]) -> list[dict[str, Any]]:
-        results = await asyncio.gather(*(self.one(r) for r in requests))
-        for result in results:
-            JsonlAppendLog.append(self.calls_path, result)
-        await self.client.close()
-        return list(results)
+        try:
+            results = await asyncio.gather(*(self.one(r) for r in requests))
+            for result in results:
+                JsonlAppendLog.append(self.calls_path, result)
+            return list(results)
+        finally:
+            await self.client.close()
 
 
 class NameDisguiser:
