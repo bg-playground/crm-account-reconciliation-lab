@@ -2,7 +2,7 @@
 
 Synthetic data only. Final result: **v1 KILL** on one criterion (calibration).
 
-No badges: the CI workflow is staged but not yet active on GitHub (see [CI](#ci)), so a CI badge would not be real.
+CI is configured in `.github/workflows/ci.yml`; see [CI](#ci). The v1 experiment verdict and CI verification status are separate.
 
 ## Executive overview
 
@@ -57,6 +57,16 @@ flowchart LR
 python -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"
 scripts/ci_local.sh                  # boundary check, offline tests, gitleaks if installed
+python -m recon_lab.cli verify       # read-only replay of the committed published evidence
+```
+
+Verification exits zero when the committed evidence reproduces consistently, including its **KILL** verdict. It exits nonzero on missing, malformed, altered or inconsistent evidence. It checks frozen hashes for both seeds, call coverage and raw-answer parsing, model-version logs, token-derived estimated spend, decision ledgers, all metrics and frozen criteria, the review queue, and both results pages. Replay files are written only in a temporary directory; no API key or provider call is needed.
+
+This is a consistency audit, not proof of provider authenticity or an immutable execution environment. The original v1 freeze does not hash pipeline source or all dependencies, and the raw logs are not independently signed. The verifier does not change that historical limitation or reinterpret the calibration criterion.
+
+The following commands rebuild development inputs and write files; they are not required to verify the published result:
+
+```bash
 python -m recon_lab.cli generate     # rebuilds data/ for seeds 101 and 202 (deterministic)
 python -m recon_lab.cli train-baseline
 ```
@@ -72,6 +82,7 @@ The committed results can be checked without any model call: the data, Splink mo
 | `src/recon_lab/baseline.py` | Splink 4.0.17 baseline (DuckDB) |
 | `src/recon_lab/judge.py`, `prompts/account_match.v1.md` | Typed AI judge, spend ledger, and the published prompt (sha256 in every run log) |
 | `src/recon_lab/decide.py`, `evaluate.py`, `report.py` | Cutoff selection, cascade, metrics with Wilson bounds, bar check, results page |
+| `src/recon_lab/verify.py` | Read-only offline replay and consistency audit of published v1 evidence |
 | `src/recon_lab/vendor/crashlab/` | Measurement modules vendored from Agent-Crash-Lab @ 8a3f865 (see `VENDORED.md`) |
 | `config/protocol_rules.json` | Bar and selection rules, committed before any AI call |
 | `config/frozen/` | Frozen protocol (cutoffs and hashes) and the dev-trained Splink model |
@@ -79,7 +90,7 @@ The committed results can be checked without any model call: the data, Splink mo
 | `runs/` | Probe, dev and published run logs, model-version logs, decision ledgers, spend ledger |
 | `results/` | Results page, metrics, review queue, calibration table |
 | `scripts/` | `boundary_check.py` and `ci_local.sh` |
-| `ci/github-actions-ci.yml` | Staged GitHub Actions workflow (not yet active) |
+| `.github/workflows/ci.yml` | Push/PR checks: boundary, offline tests and published evidence verification, gitleaks |
 | `tests/` | Unit tests, including the vendored modules' tests |
 
 ## Pre-registration
@@ -99,7 +110,9 @@ The committed results can be checked without any model call: the data, Splink mo
 
 ## CI
 
-The GitHub Actions workflow (boundary check, offline unit tests, gitleaks) is staged at `ci/github-actions-ci.yml`. It is not active yet: pushing to `.github/workflows/` needs a token with the `workflow` scope, which the build token lacked. Move it to `.github/workflows/ci.yml` to switch it on. `scripts/ci_local.sh` runs the same three checks locally. The boundary check fails on private project names and on any email or URL whose domain is not `.example` or `.invalid`, and it scans every tracked text file.
+The GitHub Actions workflow at `.github/workflows/ci.yml` runs on pushes and pull requests with read-only repository permissions. It runs the boundary check, offline unit tests, published evidence verification, and gitleaks. The test and verification steps set `OPENAI_API_KEY` to an empty string and do not run the judge. A green verification check confirms that the published **KILL** result is reproducible; it does not turn the experiment into a PASS.
+
+`scripts/ci_local.sh` runs the same checks locally, skipping gitleaks only when it is not installed. The boundary check fails on private project names and on any email or URL whose domain is not `.example` or `.invalid`, and it scans every tracked text file.
 
 ## Provenance
 
