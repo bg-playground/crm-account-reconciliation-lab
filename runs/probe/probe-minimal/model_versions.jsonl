@@ -1,0 +1,1 @@
+{"calls": 0, "changed_call_ids": [], "invalid_reasons": ["no_model_calls_recorded"], "missing_call_ids": [], "pinned_version": null, "policy": "mark_invalid", "record_type": "model_version_summary", "run_id": "probe-minimal", "run_valid": false, "timestamp": "2026-10-02T11:35:37.738316+00:00", "versions_seen": []}

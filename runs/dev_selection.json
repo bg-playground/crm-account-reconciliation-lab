@@ -1,0 +1,10 @@
+{
+  "ai_merge": 0.8,
+  "ai_nonmatch": 0.3,
+  "cumulative_spend_usd": 0.290366,
+  "dev_run_id": "dev-101-c0b47589",
+  "dev_spend_usd": 0.28951,
+  "reasoning_effort": "low",
+  "splink_merge_weight": 22.0,
+  "stopped_for_spend": false
+}

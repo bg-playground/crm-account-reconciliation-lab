@@ -1,0 +1,529 @@
+{
+  "ai_merges": {
+    "false_positives": 1,
+    "precision": {
+      "successes": 79,
+      "trials": 80,
+      "value": 0.9875,
+      "wilson_high": 0.9977900244795476,
+      "wilson_low": 0.9325372992233133
+    },
+    "predicted": 80,
+    "recall": {
+      "successes": 79,
+      "trials": 349,
+      "value": 0.22636103151862463,
+      "wilson_high": 0.27310618978459833,
+      "wilson_low": 0.1855742027112795
+    },
+    "true_positives": 79
+  },
+  "answers": {
+    "both_repeats_missing_pairs": 0,
+    "calls": 2984,
+    "missing": 1,
+    "missing_rate": 0.0003351206434316354,
+    "missing_reasons": {
+      "typed_answer.wrong_type": 1
+    },
+    "model_log": {
+      "calls": 2984,
+      "changed_call_ids": [],
+      "invalid_reasons": [],
+      "missing_call_ids": [],
+      "pinned_version": "gpt-6-luna",
+      "policy": "mark_invalid",
+      "run_id": "dev-101-c0b47589",
+      "run_valid": true,
+      "versions_seen": [
+        "gpt-6-luna"
+      ]
+    },
+    "model_log_run_valid": true,
+    "responded": 2984,
+    "returned_models": {
+      "gpt-6-luna": 2984
+    },
+    "version_coverage": 1.0
+  },
+  "audit_pairs": 100,
+  "baseline": {
+    "false_positives": 2,
+    "precision": {
+      "successes": 266,
+      "trials": 268,
+      "value": 0.9925373134328358,
+      "wilson_high": 0.9979510708344435,
+      "wilson_low": 0.9732032230885215
+    },
+    "predicted": 268,
+    "reachable_recall": 0.9914040114613181,
+    "recall": {
+      "successes": 266,
+      "trials": 349,
+      "value": 0.7621776504297995,
+      "wilson_high": 0.8038383706960731,
+      "wilson_low": 0.7148081642424312
+    },
+    "review_floor_match_weight": -6.6293566200796095,
+    "review_size": 91,
+    "true_positives": 266
+  },
+  "blocker_matches_splink_pairs": true,
+  "blocking_per_rule": {
+    "domain": 209,
+    "name4_postcode5": 257,
+    "phone10": 1268,
+    "soundex_state": 401
+  },
+  "blocking_recall": {
+    "successes": 346,
+    "trials": 349,
+    "value": 0.9914040114613181,
+    "wilson_high": 0.9970723666795906,
+    "wilson_low": 0.9750356195712673
+  },
+  "calibration": {
+    "max_abs_gap": 0.030078313253012023,
+    "measured_bins": 2,
+    "met_bins": 0,
+    "met_share": 0.0,
+    "table": {
+      "answers": 1341,
+      "bin_edges": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ],
+      "bins": [
+        {
+          "confidence_within_interval": false,
+          "correct": 0,
+          "count": 1136,
+          "lower": 0.0,
+          "mean_confidence": 0.011919014084507042,
+          "observed_accuracy": 0.0,
+          "status": "not_met",
+          "upper": 0.1,
+          "upper_inclusive": false,
+          "wilson_interval": [
+            0.0,
+            0.003370169413445082
+          ]
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 0,
+          "count": 11,
+          "lower": 0.1,
+          "mean_confidence": 0.16181818181818183,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.2,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 0,
+          "count": 2,
+          "lower": 0.2,
+          "mean_confidence": 0.25,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.3,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 0,
+          "count": 1,
+          "lower": 0.3,
+          "mean_confidence": 0.38,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.4,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 0,
+          "count": 2,
+          "lower": 0.4,
+          "mean_confidence": 0.44999999999999996,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.5,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 0,
+          "count": 3,
+          "lower": 0.5,
+          "mean_confidence": 0.5666666666666667,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.6,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 0,
+          "count": 1,
+          "lower": 0.6,
+          "mean_confidence": 0.62,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.7,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 1,
+          "count": 4,
+          "lower": 0.7,
+          "mean_confidence": 0.745,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.8,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": null,
+          "correct": 13,
+          "count": 15,
+          "lower": 0.8,
+          "mean_confidence": 0.86,
+          "observed_accuracy": null,
+          "status": "not_measured",
+          "upper": 0.9,
+          "upper_inclusive": false,
+          "wilson_interval": null
+        },
+        {
+          "confidence_within_interval": false,
+          "correct": 166,
+          "count": 166,
+          "lower": 0.9,
+          "mean_confidence": 0.969921686746988,
+          "observed_accuracy": 1.0,
+          "status": "not_met",
+          "upper": 1.0,
+          "upper_inclusive": true,
+          "wilson_interval": [
+            0.9773820900540565,
+            0.9999999999999999
+          ]
+        }
+      ],
+      "bins_met": 0,
+      "bins_not_measured": 8,
+      "bins_not_met": 2,
+      "min_count": 30,
+      "missing_answers": 1,
+      "schema_version": "calibration-table-v1",
+      "verdict": "not_met",
+      "z": 1.959963984540054
+    }
+  },
+  "candidates": 1510,
+  "cascade": {
+    "false_positives": 3,
+    "precision": {
+      "successes": 345,
+      "trials": 348,
+      "value": 0.9913793103448276,
+      "wilson_high": 0.997063941736978,
+      "wilson_low": 0.9749647701331898
+    },
+    "predicted": 348,
+    "recall": {
+      "successes": 345,
+      "trials": 349,
+      "value": 0.9885386819484241,
+      "wilson_high": 0.9955341386602389,
+      "wilson_low": 0.9709055794492146
+    },
+    "true_positives": 345
+  },
+  "cascade_decisions": {
+    "merge_ai": 80,
+    "merge_splink": 268,
+    "nomatch_ai": 1152,
+    "review_ai_uncertain": 10
+  },
+  "cascade_reachable_recall": 0.9914040114613181,
+  "disguised_names": {
+    "recall_disguised": 0.6666666666666666,
+    "recall_main_repeat1": 0.9444444444444444,
+    "true_pairs_in_sample": 18
+  },
+  "disguised_pairs": 300,
+  "family_recall": {
+    "addr_abbrev": {
+      "baseline": {
+        "successes": 124,
+        "trials": 161,
+        "value": 0.7701863354037267,
+        "wilson_high": 0.8284223225821091,
+        "wilson_low": 0.6993575249296388
+      },
+      "cascade": {
+        "successes": 158,
+        "trials": 161,
+        "value": 0.9813664596273292,
+        "wilson_high": 0.9936430065067258,
+        "wilson_low": 0.9466544229682271
+      }
+    },
+    "addr_missing": {
+      "baseline": {
+        "successes": 40,
+        "trials": 53,
+        "value": 0.7547169811320755,
+        "wilson_high": 0.8506709789194319,
+        "wilson_low": 0.6243344231264808
+      },
+      "cascade": {
+        "successes": 53,
+        "trials": 53,
+        "value": 1.0,
+        "wilson_high": 0.9999999999999999,
+        "wilson_low": 0.932418011423458
+      }
+    },
+    "addr_moved": {
+      "baseline": {
+        "successes": 33,
+        "trials": 106,
+        "value": 0.3113207547169811,
+        "wilson_high": 0.4047623868893514,
+        "wilson_low": 0.2310763899308267
+      },
+      "cascade": {
+        "successes": 103,
+        "trials": 106,
+        "value": 0.9716981132075472,
+        "wilson_high": 0.9903287161344402,
+        "wilson_low": 0.9200743418151144
+      }
+    },
+    "conflict_employees": {
+      "baseline": {
+        "successes": 88,
+        "trials": 118,
+        "value": 0.7457627118644068,
+        "wilson_high": 0.8157177217827811,
+        "wilson_low": 0.6603107217485353
+      },
+      "cascade": {
+        "successes": 117,
+        "trials": 118,
+        "value": 0.9915254237288136,
+        "wilson_high": 0.9985024594780347,
+        "wilson_low": 0.953554427584598
+      }
+    },
+    "conflict_industry": {
+      "baseline": {
+        "successes": 74,
+        "trials": 101,
+        "value": 0.7326732673267327,
+        "wilson_high": 0.8092903971305228,
+        "wilson_low": 0.6390055396933065
+      },
+      "cascade": {
+        "successes": 99,
+        "trials": 101,
+        "value": 0.9801980198019802,
+        "wilson_high": 0.994552677538853,
+        "wilson_low": 0.9306538303741566
+      }
+    },
+    "name_case": {
+      "baseline": {
+        "successes": 43,
+        "trials": 57,
+        "value": 0.7543859649122807,
+        "wilson_high": 0.847671625297096,
+        "wilson_low": 0.628977037672441
+      },
+      "cascade": {
+        "successes": 57,
+        "trials": 57,
+        "value": 1.0,
+        "wilson_high": 0.9999999999999998,
+        "wilson_low": 0.9368611651470209
+      }
+    },
+    "name_sector_variant": {
+      "baseline": {
+        "successes": 87,
+        "trials": 110,
+        "value": 0.7909090909090909,
+        "wilson_high": 0.8564362913786698,
+        "wilson_low": 0.7057490553569437
+      },
+      "cascade": {
+        "successes": 109,
+        "trials": 110,
+        "value": 0.990909090909091,
+        "wilson_high": 0.9983934246956784,
+        "wilson_low": 0.9502943479206695
+      }
+    },
+    "name_suffix": {
+      "baseline": {
+        "successes": 99,
+        "trials": 122,
+        "value": 0.8114754098360656,
+        "wilson_high": 0.8709628604665671,
+        "wilson_low": 0.7329716513566709
+      },
+      "cascade": {
+        "successes": 121,
+        "trials": 122,
+        "value": 0.9918032786885246,
+        "wilson_high": 0.9985516090487794,
+        "wilson_low": 0.9550291990931754
+      }
+    },
+    "name_typo": {
+      "baseline": {
+        "successes": 46,
+        "trials": 68,
+        "value": 0.6764705882352942,
+        "wilson_high": 0.7756239590467001,
+        "wilson_low": 0.5584449810050397
+      },
+      "cascade": {
+        "successes": 65,
+        "trials": 68,
+        "value": 0.9558823529411765,
+        "wilson_high": 0.9848833802919585,
+        "wilson_low": 0.8781280481750362
+      }
+    },
+    "phone_changed": {
+      "baseline": {
+        "successes": 41,
+        "trials": 59,
+        "value": 0.6949152542372882,
+        "wilson_high": 0.7974636801988394,
+        "wilson_low": 0.5685367346805482
+      },
+      "cascade": {
+        "successes": 57,
+        "trials": 59,
+        "value": 0.9661016949152542,
+        "wilson_high": 0.9906540909083387,
+        "wilson_low": 0.8845642924988925
+      }
+    },
+    "phone_missing": {
+      "baseline": {
+        "successes": 79,
+        "trials": 126,
+        "value": 0.626984126984127,
+        "wilson_high": 0.7064947616169459,
+        "wilson_low": 0.539959647403448
+      },
+      "cascade": {
+        "successes": 124,
+        "trials": 126,
+        "value": 0.9841269841269841,
+        "wilson_high": 0.9956361981751772,
+        "wilson_low": 0.9439712362150748
+      }
+    },
+    "web_missing": {
+      "baseline": {
+        "successes": 90,
+        "trials": 140,
+        "value": 0.6428571428571429,
+        "wilson_high": 0.7174389172885718,
+        "wilson_low": 0.5606450254630246
+      },
+      "cascade": {
+        "successes": 136,
+        "trials": 140,
+        "value": 0.9714285714285714,
+        "wilson_high": 0.9888342231586664,
+        "wilson_low": 0.9288427879216012
+      }
+    },
+    "web_subdomain": {
+      "baseline": {
+        "successes": 28,
+        "trials": 32,
+        "value": 0.875,
+        "wilson_high": 0.9502986561251991,
+        "wilson_low": 0.7193169451834978
+      },
+      "cascade": {
+        "successes": 32,
+        "trials": 32,
+        "value": 1.0,
+        "wilson_high": 1.0,
+        "wilson_low": 0.8928208017449293
+      }
+    },
+    "zip_plus4": {
+      "baseline": {
+        "successes": 62,
+        "trials": 82,
+        "value": 0.7560975609756098,
+        "wilson_high": 0.8362011491132831,
+        "wilson_low": 0.6530729216795924
+      },
+      "cascade": {
+        "successes": 82,
+        "trials": 82,
+        "value": 1.0,
+        "wilson_high": 1.0,
+        "wilson_low": 0.9552493763098998
+      }
+    }
+  },
+  "judged_pairs": 1242,
+  "not_judged_pairs": 0,
+  "published_spend_usd": 0.2895099000000008,
+  "review_queue_size": 10,
+  "review_queue_true_pairs": 1,
+  "seed": 101,
+  "tokens": {
+    "input": 1249099,
+    "output": 329200,
+    "reasoning": 255446
+  },
+  "true_pairs": 349,
+  "unseen_family_recall": {
+    "successes": 0,
+    "trials": 0,
+    "value": null,
+    "wilson_high": null,
+    "wilson_low": null
+  },
+  "unseen_family_recall_baseline": {
+    "successes": 0,
+    "trials": 0,
+    "value": null,
+    "wilson_high": null,
+    "wilson_low": null
+  }
+}
