@@ -1,4 +1,4 @@
-# crm-account-reconciliation-lab
+# CRM Salesforce Account Reconciliation Lab
 
 A one-week slice: reconcile **synthetic** Salesforce-shaped
 Account exports from two orgs with deterministic blocking, a Splink baseline,
