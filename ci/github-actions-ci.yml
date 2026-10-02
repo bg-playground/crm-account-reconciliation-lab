@@ -1,0 +1,47 @@
+# Staged copy of the GitHub Actions workflow. Activate it by moving it to
+# .github/workflows/ci.yml; pushing that path needs a GitHub token with the
+# "workflow" scope, which the token used to build this repo did not have.
+
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Boundary check (private names, non-reserved emails/URLs)
+        run: python scripts/boundary_check.py
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Unit tests (no network, no API key)
+        env:
+          OPENAI_API_KEY: ""
+        run: python -m pytest -q
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

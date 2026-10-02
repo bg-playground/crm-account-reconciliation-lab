@@ -53,7 +53,7 @@ Spend caps: $10 development, $10 published run, $20 hard ceiling; the client sto
 
 ## CI
 
-`.github/workflows/ci.yml` runs the boundary check, the offline unit tests, and gitleaks. The boundary check fails on private project names and on any email or URL whose domain is not `.example` or `.invalid`; it scans every tracked text file.
+The GitHub Actions workflow (boundary check, offline unit tests, gitleaks) is staged at `ci/github-actions-ci.yml`. It is not active yet: pushing to `.github/workflows/` needs a token with the `workflow` scope, which the build token lacked. Move it to `.github/workflows/ci.yml` to switch it on. `scripts/ci_local.sh` runs the same three checks locally. The boundary check fails on private project names and on any email or URL whose domain is not `.example` or `.invalid`; it scans every tracked text file.
 
 ## Licence
 
