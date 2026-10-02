@@ -51,7 +51,11 @@ Exit code 0 means the evidence reproduced consistently, including the KILL verdi
 
 This checks evidence consistency; it does not authenticate the provider logs or establish performance on real CRM data. See the [verification limitations](../README.md#how-to-reproduce).
 
-## 4. Follow the evidence
+## 4. Try the interactive review workbench
+
+Run `python -m recon_lab.cli workbench` with your virtual environment Python and open the address printed in the terminal. Review side-by-side records, explore recorded failures, and export your assessments. See the [workbench guide](review-workbench.md) for platform commands and session behavior.
+
+## 5. Follow the evidence
 
 | Artifact | What to inspect |
 |---|---|

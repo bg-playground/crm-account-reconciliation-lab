@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Account reconciliation workbench</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<header><div class="eyebrow">CRM ACCOUNT RECONCILIATION LAB · SYNTHETIC DATA</div><h1>Review the evidence.</h1><p>Explore recorded decisions, compare Accounts, and capture your assessment.</p><div class="status"><strong>Experiment: KILL</strong><span>Calibration failed the frozen acceptance gate.</span><span id="audit">Loading verified evidence…</span></div></header>
+<main>
+<div id="error" role="alert" hidden></div>
+<section id="summary" class="summary" aria-label="Published results"></section>
+<section class="toolbar" aria-label="Explore evidence">
+<div><label for="filter">Explore</label><select id="filter"><option value="review">Human review queue</option><option value="false_merge">Incorrect merge recommendations</option><option value="missed_match">Missed automatic matches</option><option value="disagreement">Repeat disagreement</option><option value="all">All evidence pairs</option></select></div>
+<div class="search"><label for="search">Find an Account</label><input id="search" type="search" placeholder="Company name or Account ID"></div>
+<div><label for="progress">Your review</label><select id="progress"><option value="all">All assessments</option><option value="pending">Not assessed</option><option value="assessed">Assessed</option></select></div>
+<button id="export" type="button">Export review session</button>
+</section>
+<p id="filter-help" class="muted"></p>
+<div class="workspace"><section class="queue" aria-label="Account pairs"><div class="queue-heading"><h2>Account pairs</h2><span id="count" role="status"></span></div><div id="pairs"></div></section>
+<section id="detail" class="detail" aria-label="Selected pair"><p>Loading evidence…</p></section></div>
+<p id="save-status" role="status" class="muted"></p>
+<footer>Assessments stay in this browser. Export a session to keep a copy. Reviewer decisions are separate from the published experiment; this workbench does not execute merges.<br>Failure filters use synthetic ground truth retrospectively. “Missed automatic matches” includes true pairs sent to review and pairs missed by blocking.</footer>
+</main>
+</body></html>

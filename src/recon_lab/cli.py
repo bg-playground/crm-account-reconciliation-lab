@@ -22,7 +22,20 @@ class Cli:
         sub.add_parser("freeze")
         sub.add_parser("publish")
         sub.add_parser("verify")
+        workbench = sub.add_parser("workbench", help="review committed synthetic evidence locally, without provider calls")
+        workbench.add_argument("--port", type=int, default=8765)
         args = parser.parse_args(argv)
+        if args.command == "workbench":
+            from .workbench import serve
+
+            if not 0 <= args.port <= 65535:
+                parser.error("port must be between 0 and 65535")
+            try:
+                serve(args.port)
+            except (ValueError, KeyError, OSError, TypeError) as exc:
+                print(f"Workbench failed: {exc}", file=sys.stderr)
+                return 1
+            return 0
         if args.command == "verify":
             from .verify import verify
 
