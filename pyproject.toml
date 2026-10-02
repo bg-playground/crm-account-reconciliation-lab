@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recon-lab"
+version = "0.1.0"
+description = "Synthetic two-org Salesforce Account reconciliation lab (Splink baseline + typed AI judge)"
+requires-python = ">=3.11"
+dependencies = [
+  "splink==4.0.17",
+  "duckdb==1.5.6",
+  "faker==40.40.0",
+  "openai==3.23.0",
+  "httpx==0.28.1",
+  "pandas>=2.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "scripts"]

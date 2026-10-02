@@ -1,0 +1,48 @@
+{
+  "schema": "recon-protocol-rules-v1",
+  "written": "2026-10-02 (America/New_York), before any AI judge call",
+  "seeds": {"dev": 101, "test": 202},
+  "data": {"rows_per_org": 1000, "shared_entities": 250, "intra_org_duplicates_per_org": 40,
+           "hard_negative_twins": 75, "unseen_family": "rebrand_domain", "unseen_rate_test": 0.15, "unseen_rate_dev": 0.0},
+  "model": {"requested": "gpt-6-luna", "api": "chat.completions", "response_format": "json_object",
+            "max_completion_tokens": 400, "repeats_main_arm": 2, "repeats_disguised_arm": 1,
+            "disguised_arm_pairs": 300, "calibration_audit_pairs_above_splink_cutoff": 100,
+            "max_judged_pairs": 1800, "concurrency": 8},
+  "pricing_usd_per_1m_tokens": {"input": 0.10, "output": 0.50, "note": "Standard tier list price read 2026-10-02; cached input charged at full input price"},
+  "spend": {"dev_cap_usd": 10.0, "published_cap_usd": 10.0, "stop_and_report_at_cumulative_usd": 15.0, "hard_ceiling_usd": 20.0},
+  "cutoff_selection_on_dev": {
+    "splink_merge_weight": {"rule": "lowest match weight on the grid with dev Splink auto-merge precision >= target; none -> no Splink auto-merge",
+                            "grid": {"start": -5.0, "stop": 40.0, "step": 0.5}, "target_precision": 0.99},
+    "ai_merge": {"rule": "lowest value on the grid with dev cascade auto-merge precision >= target",
+                 "grid": [0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 0.97, 0.99], "target_precision": 0.99},
+    "ai_nonmatch": {"rule": "highest value on the grid such that dev true pairs at or below it <= share of all dev true pairs",
+                    "grid": [0.02, 0.05, 0.1, 0.2, 0.3], "max_true_pair_loss_share": 0.01},
+    "routing": "Splink match weight >= cutoff -> auto-merge; every other blocked candidate -> AI judge (mean of non-missing repeats); both repeats missing -> review"
+  },
+  "bar": {
+    "blocking_recall_min": 0.98,
+    "auto_merge_precision_min": 0.98,
+    "auto_merge_precision_wilson_low_min": 0.96,
+    "auto_merge_recall_min": 0.85,
+    "review_share_max": 0.10,
+    "review_pairs_max": 300,
+    "recall_gain_min": 0.05,
+    "review_reduction_factor": 0.7,
+    "reachable_recall_tolerance": 0.01,
+    "calibration_bins": 10,
+    "calibration_min_count": 30,
+    "calibration_met_share_min": 0.80,
+    "calibration_max_gap": 0.10,
+    "missing_rate_max": 0.02,
+    "unseen_family_recall_min": 0.75,
+    "published_spend_max_usd": 10.0,
+    "disguised_names_flag_drop": 0.25
+  },
+  "verdict_rules": {
+    "PASS": "all nine criteria pass on test seed 202",
+    "KILL": "any criterion fails",
+    "invalid": "if 1, 2, 7 or 9 fails the run is invalid and no accuracy claim is published",
+    "honest_negative": "if 5 fails, the negative result is published as-is",
+    "disguised_names": "a recall drop above 0.25 is flagged, not a kill"
+  }
+}
