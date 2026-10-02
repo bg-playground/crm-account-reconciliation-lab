@@ -1,0 +1,249 @@
+{
+  "additional_columns_to_retain": [],
+  "bayes_factor_column_prefix": "bf_",
+  "blocking_rules_to_generate_predictions": [
+    {
+      "blocking_rule": "l.\"domain_norm\" = r.\"domain_norm\"",
+      "sql_dialect": "duckdb"
+    },
+    {
+      "blocking_rule": "(l.\"name4\" = r.\"name4\") AND (l.\"postcode5\" = r.\"postcode5\")",
+      "sql_dialect": "duckdb"
+    },
+    {
+      "blocking_rule": "l.\"phone10\" = r.\"phone10\"",
+      "sql_dialect": "duckdb"
+    },
+    {
+      "blocking_rule": "(l.\"soundex_first\" = r.\"soundex_first\") AND (l.\"state_norm\" = r.\"state_norm\")",
+      "sql_dialect": "duckdb"
+    }
+  ],
+  "comparison_vector_value_column_prefix": "gamma_",
+  "comparisons": [
+    {
+      "comparison_description": "JaroWinklerAtThresholds",
+      "comparison_levels": [
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "is_null_level": true,
+          "label_for_charts": "name_norm is NULL",
+          "sql_condition": "\"name_norm_l\" IS NULL OR \"name_norm_r\" IS NULL"
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Exact match on name_norm",
+          "m_probability": 0.5751962563420439,
+          "sql_condition": "\"name_norm_l\" = \"name_norm_r\"",
+          "u_probability": 9.904952476238119e-05
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Jaro-Winkler distance of name_norm >= 0.95",
+          "m_probability": 0.24400506499502206,
+          "sql_condition": "jaro_winkler_similarity(\"name_norm_l\", \"name_norm_r\") >= 0.95",
+          "u_probability": 4.652326163081541e-05
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Jaro-Winkler distance of name_norm >= 0.88",
+          "m_probability": 0.1671382275196709,
+          "sql_condition": "jaro_winkler_similarity(\"name_norm_l\", \"name_norm_r\") >= 0.88",
+          "u_probability": 0.0004022011005502751
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Jaro-Winkler distance of name_norm >= 0.75",
+          "m_probability": 0.013660451125132422,
+          "sql_condition": "jaro_winkler_similarity(\"name_norm_l\", \"name_norm_r\") >= 0.75",
+          "u_probability": 0.014703351675837919
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "All other comparisons",
+          "m_probability": 3.626151881652785e-11,
+          "sql_condition": "ELSE",
+          "u_probability": 0.9847488744372186
+        }
+      ],
+      "output_column_name": "name_norm"
+    },
+    {
+      "comparison_description": "ExactMatch",
+      "comparison_levels": [
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "is_null_level": true,
+          "label_for_charts": "domain_norm is NULL",
+          "sql_condition": "\"domain_norm_l\" IS NULL OR \"domain_norm_r\" IS NULL"
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Exact match on domain_norm",
+          "m_probability": 0.9999999999989282,
+          "sql_condition": "\"domain_norm_l\" = \"domain_norm_r\"",
+          "u_probability": 0.00014783680796988938
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "All other comparisons",
+          "m_probability": 1.0718449584833768e-12,
+          "sql_condition": "ELSE",
+          "u_probability": 0.9998521631920301
+        }
+      ],
+      "output_column_name": "domain_norm"
+    },
+    {
+      "comparison_description": "ExactMatch",
+      "comparison_levels": [
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "is_null_level": true,
+          "label_for_charts": "phone10 is NULL",
+          "sql_condition": "\"phone10_l\" IS NULL OR \"phone10_r\" IS NULL"
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Exact match on phone10",
+          "m_probability": 0.7185185185185188,
+          "sql_condition": "\"phone10_l\" = \"phone10_r\"",
+          "u_probability": 0.0008238393643182697
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "All other comparisons",
+          "m_probability": 0.2814814814814812,
+          "sql_condition": "ELSE",
+          "u_probability": 0.9991761606356817
+        }
+      ],
+      "output_column_name": "phone10"
+    },
+    {
+      "comparison_description": "ExactMatch",
+      "comparison_levels": [
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "is_null_level": true,
+          "label_for_charts": "postcode5 is NULL",
+          "sql_condition": "\"postcode5_l\" IS NULL OR \"postcode5_r\" IS NULL"
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Exact match on postcode5",
+          "m_probability": 0.6965689909307242,
+          "sql_condition": "\"postcode5_l\" = \"postcode5_r\"",
+          "u_probability": 0.0005832916458229114
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "All other comparisons",
+          "m_probability": 0.30343100906927567,
+          "sql_condition": "ELSE",
+          "u_probability": 0.9994167083541771
+        }
+      ],
+      "output_column_name": "postcode5"
+    },
+    {
+      "comparison_description": "ExactMatch",
+      "comparison_levels": [
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "is_null_level": true,
+          "label_for_charts": "city_norm is NULL",
+          "sql_condition": "\"city_norm_l\" IS NULL OR \"city_norm_r\" IS NULL"
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Exact match on city_norm",
+          "m_probability": 0.9999999870098659,
+          "sql_condition": "\"city_norm_l\" = \"city_norm_r\"",
+          "u_probability": 0.00026813406703351676
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "All other comparisons",
+          "m_probability": 2.5980268143203385e-08,
+          "sql_condition": "ELSE",
+          "u_probability": 0.9997318659329665
+        }
+      ],
+      "output_column_name": "city_norm"
+    },
+    {
+      "comparison_description": "LevenshteinAtThresholds",
+      "comparison_levels": [
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "is_null_level": true,
+          "label_for_charts": "street_norm is NULL",
+          "sql_condition": "\"street_norm_l\" IS NULL OR \"street_norm_r\" IS NULL"
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Exact match on street_norm",
+          "m_probability": 0.6733163838149869,
+          "sql_condition": "\"street_norm_l\" = \"street_norm_r\"",
+          "u_probability": 0.00011396005411264506
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Levenshtein distance of street_norm <= 2",
+          "sql_condition": "levenshtein(\"street_norm_l\", \"street_norm_r\") <= 2",
+          "u_probability": 1.470452311130904e-05
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "Levenshtein distance of street_norm <= 6",
+          "m_probability": 2.1983301538111205e-16,
+          "sql_condition": "levenshtein(\"street_norm_l\", \"street_norm_r\") <= 6",
+          "u_probability": 0.0022130307282520103
+        },
+        {
+          "fix_m_probability": false,
+          "fix_u_probability": false,
+          "label_for_charts": "All other comparisons",
+          "m_probability": 0.32668361618501285,
+          "sql_condition": "ELSE",
+          "u_probability": 0.997658304694524
+        }
+      ],
+      "output_column_name": "street_norm"
+    }
+  ],
+  "em_convergence": 0.0001,
+  "link_type": "link_and_dedupe",
+  "linker_uid": "ypeqjp7v",
+  "max_iterations": 25,
+  "probability_two_random_records_match": 0.0001306903451725863,
+  "retain_intermediate_calculation_columns": false,
+  "retain_matching_columns": true,
+  "source_dataset_column_name": "source_dataset",
+  "sql_dialect": "duckdb",
+  "term_frequency_adjustment_column_prefix": "tf_",
+  "unique_id_column_name": "unique_id"
+}
